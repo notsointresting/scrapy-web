@@ -11,15 +11,15 @@ def calculate_hash(file_path):
         hasher.update(buf)
     return hasher.hexdigest()
 
-# Initialize Instaloader
-ig = instaloader.Instaloader()
-
-# Get Instagram username
-dp = 'rhutika_1612'
+# Instagram username
+profile_name = "rhutika_1612"  # Replace with the target username
 
 # File to save the previous profile picture hash
-hash_file = f"{dp}_profile_pic_hash.txt"
-existing_pic = f"{dp}_profile_pic.jpg"
+hash_file = f"{profile_name}_profile_pic_hash.txt"
+existing_pic = f"{profile_name}_profile_pic.jpg"
+
+# Initialize Instaloader
+ig = instaloader.Instaloader()
 
 # Check if the previous profile picture exists and get its hash
 previous_hash = None
@@ -27,15 +27,15 @@ if os.path.exists(hash_file):
     with open(hash_file, 'r') as f:
         previous_hash = f.read().strip()
 
-# Download the profile picture
-folder_name = dp
-ig.download_profile(dp, profile_pic_only=True)
+# Download the profile picture to a temporary folder
+temp_folder = f"{profile_name}_temp"
+ig.download_profile(profile_name, profile_pic_only=True, dirname=temp_folder)
 
 # Find the new profile picture
 new_image_path = None
-for file in os.listdir(folder_name):
+for file in os.listdir(temp_folder):
     if file.endswith(".jpg"):  # Look for the profile picture
-        new_image_path = os.path.join(folder_name, file)
+        new_image_path = os.path.join(temp_folder, file)
         break
 
 if new_image_path:
@@ -49,10 +49,4 @@ if new_image_path:
         shutil.move(new_image_path, existing_pic)
         print(f"New profile picture saved as {existing_pic}")
 
-        # Save the new hash
-        with open(hash_file, 'w') as f:
-            f.write(new_hash)
-
-# Clean up: Remove the folder
-if os.path.isdir(folder_name):
-    shutil.rmtree(folder_name)
+   
