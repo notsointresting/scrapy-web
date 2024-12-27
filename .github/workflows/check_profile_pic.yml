@@ -1,0 +1,32 @@
+name: Daily Instagram Profile Check
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Runs daily at 12:00 UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  check-profile-pic:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run the Python script
+      - name: Run Script
+        run: |
+          python scripts/download_profile_pic.py
