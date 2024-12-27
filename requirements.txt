@@ -1,1 +1,3 @@
 instaloader
+selenium 
+requests
